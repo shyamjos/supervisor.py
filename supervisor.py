@@ -23,7 +23,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',datefmt='%d
 level = logging.getLevelName(args.loglevel.upper())
 logger.setLevel(level)                               
 
-#Keep count of proccess restarts
+#Keep count of process restarts
 RESTART_COUNT = 0
 
 #Supervisor function
@@ -34,11 +34,11 @@ def do_supervise(args):
     max_restart = args.retry
     logger.info("supervisor.py starting process: %s", args.command)
     try:
-        #start the proccess in the background
+        #start the process and monitor
         proc = subprocess.Popen(args.command, shell=True)
         logger.info("Process started!")
         while proc.poll() is None:
-            #Poll process is alive every N seconds
+            #Check process is alive every N seconds
             time.sleep(args.interval)
             logger.debug("Process is alive!")
     except KeyboardInterrupt:
@@ -46,19 +46,18 @@ def do_supervise(args):
         proc.kill()
         sys.exit(1)
 
-    #Restart unit max_restart or always restart
+    #Restart until max_restart or always restart when max_restart == 0 (default)
     if RESTART_COUNT < max_restart or max_restart == 0:
         logger.error('process exited with status code:  %s', proc.poll())
-        logger.info("Waiting %s seconds before restarting proccess again!", args.wait)
+        logger.info("Waiting %s seconds before restarting process again!", args.wait)
         try:
             time.sleep(args.wait)
-            logger.info("Restarting Proccess!")
+            logger.info("Restarting Process!")
             #Keep track of process restarts
             RESTART_COUNT +=1
             do_supervise(args)
         except KeyboardInterrupt:
             print ("Got Keyboard interrupt. Exiting...")
-            proc.kill()
             sys.exit(1)
     else:
         #exit if max retries is reached
