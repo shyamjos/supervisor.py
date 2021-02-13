@@ -61,6 +61,7 @@ def do_supervise(args):
             sys.exit(1)
     else:
         #exit if max retries is reached
+        logger.error('process exited with status code:  %s', proc.poll())
         logger.error("Max retries reached!, Total Restarts: %s", RESTART_COUNT)
         sys.exit(1)
 #Start process
