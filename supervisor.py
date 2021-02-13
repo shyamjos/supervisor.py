@@ -4,7 +4,6 @@ import subprocess
 import time
 import sys
 import logging
-import time
 import argparse
 
 #Configure CLI options
