@@ -50,11 +50,16 @@ def do_supervise(args):
     if RESTART_COUNT < max_restart or max_restart == 0:
         logger.error('process exited with status code:  %s', proc.poll())
         logger.info("Waiting %s seconds before restarting proccess again!", args.wait)
-        time.sleep(args.wait)
-        logger.info("Restarting Proccess!")
-        #Keep track of process restarts
-        RESTART_COUNT +=1
-        do_supervise(args)
+        try:
+            time.sleep(args.wait)
+            logger.info("Restarting Proccess!")
+            #Keep track of process restarts
+            RESTART_COUNT +=1
+            do_supervise(args)
+        except KeyboardInterrupt:
+            print ("Got Keyboard interrupt. Exiting...")
+            proc.kill()
+            sys.exit(1)
     else:
         #exit if max retries is reached
         logger.error("Max retries reached!, Total Restarts: %s", RESTART_COUNT)
