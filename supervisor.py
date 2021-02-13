@@ -21,7 +21,7 @@ logger = logging.getLogger('supervisor.py')
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',datefmt='%d-%m-%y %H:%M')
 #set logging level
 level = logging.getLevelName(args.loglevel.upper())
-logger.setLevel(level)                                
+logger.setLevel(level)                               
 
 #Keep count of proccess restarts
 RESTART_COUNT = 0
@@ -31,25 +31,30 @@ def do_supervise(args):
     #Set restart counter as global variable
     global RESTART_COUNT
     #Set max restart count(default: always restart)
-    MAX_RESTART = args.retry
-    logger.info("supervisor.py Starting..")
-    #start the proccess in the background
-    p = subprocess.Popen(args.command, shell=True)
-    logger.info("Process started!")
+    max_restart = args.retry
+    logger.info("supervisor.py starting process: %s", args.command)
+    try:
+        #start the proccess in the background
+        proc = subprocess.Popen(args.command, shell=True)
+        logger.info("Process started!")
+        while proc.poll() is None:
+            #Poll process is alive every N seconds
+            time.sleep(args.interval)
+            logger.debug("Process is alive!")
+    except KeyboardInterrupt:
+        print ("Got Keyboard interrupt. Exiting...")
+        proc.kill()
+        sys.exit(1)
 
-    while p.poll() is None:
-          #Poll process is alive every N seconds
-          time.sleep(args.interval)
-          logger.debug("Process is alive!")
-    #Restart unit MAX_RESTART or always restart
-    if RESTART_COUNT < MAX_RESTART or MAX_RESTART == 0:
-       logger.error('process exited with status code:  %s', p.poll())
-       logger.info("Waiting %s seconds before restarting proccess again!", args.wait)
-       time.sleep(args.wait)
-       logger.info("Restarting Proccess!")
-       #Keep track of process restarts
-       RESTART_COUNT +=1
-       do_supervise(args)
+    #Restart unit max_restart or always restart
+    if RESTART_COUNT < max_restart or max_restart == 0:
+        logger.error('process exited with status code:  %s', proc.poll())
+        logger.info("Waiting %s seconds before restarting proccess again!", args.wait)
+        time.sleep(args.wait)
+        logger.info("Restarting Proccess!")
+        #Keep track of process restarts
+        RESTART_COUNT +=1
+        do_supervise(args)
     else:
         #exit if max retries is reached
         logger.error("Max retries reached!, Total Restarts: %s", RESTART_COUNT)
