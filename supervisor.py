@@ -18,7 +18,7 @@ args = parser.parse_args(args=None if sys.argv[1:] else ['--help'])
 
 #Logging configuration
 logger = logging.getLogger('supervisor.py')
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',datefmt='%d-%m-%y %H:%M')
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',datefmt='%d-%m-%y %H:%M:%S')
 #set logging level
 level = logging.getLevelName(args.loglevel.upper())
 logger.setLevel(level)                               
