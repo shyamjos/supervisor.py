@@ -15,7 +15,7 @@ optional arguments:
   -w [WAIT], --wait [WAIT]
                         Seconds to wait between attempts to restart process
   -r [RETRY], --retry [RETRY]
-                        Number of attempts to retry if proccess stops, default value 0 means always restart
+                        Number of attempts to retry if process stops, default value 0 means always restart
   -l [{debug,info,warning,error}], --loglevel [{debug,info,warning,error}]
                         set output log level, (default level is: info)
 ```

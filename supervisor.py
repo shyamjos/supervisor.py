@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser(description='A simple supervisord like python s
 parser.add_argument('-c','--command', help='Full path to script or command to supervise. eg: ./script.sh or "free -m"', required=True)
 parser.add_argument('-i','--interval', help='Check process is alive every N seconds', nargs='?', const=1, type=int, default=1)
 parser.add_argument('-w','--wait', help='Seconds to wait between attempts to restart process', nargs='?' , const=1, type=int, default=1)
-parser.add_argument('-r','--retry', help='Number of attempts to retry if proccess stops, default value 0 means always restart', nargs='?', const=0, type=int, default=0)
+parser.add_argument('-r','--retry', help='Number of attempts to retry if process stops, default value 0 means always restart', nargs='?', const=0, type=int, default=0)
 parser.add_argument('-l','--loglevel', help='set output log level, (default level is: %(default)s)', nargs='?', const='info', choices=["debug", "info", "warning", "error"], default='info')
 args = parser.parse_args(args=None if sys.argv[1:] else ['--help'])
 
